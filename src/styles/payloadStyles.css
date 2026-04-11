@@ -1,0 +1,7 @@
+/* src/styles/payloadStyles.css */
+
+/* Scope Tailwind into its own named layers so it doesn't interfere
+   with Payload's internal CSS layer ordering. Preflight is intentionally
+   skipped to avoid resetting Payload's admin base styles. */
+@import 'tailwindcss/theme.css' layer(tw-theme);
+@import 'tailwindcss/utilities.css' layer(tw-utilities);
