@@ -40,3 +40,4 @@ Thumbs.db
 
 # Payload CMS
 /src/payload-types.ts
+.claude/
