@@ -36,7 +36,7 @@ function parseTimeString(time: string): { hours: number; minutes: number } | nul
 }
 
 export const availabilityHandler: PayloadHandler = async (req) => {
-  const url = new URL(req.url);
+  const url = new URL(req.url ?? "", process.env.NEXT_PUBLIC_SERVER_URL ?? "http://localhost:3002");
   const restaurant = url.searchParams.get("restaurant");
   const date = url.searchParams.get("date");
   const time = url.searchParams.get("time");
