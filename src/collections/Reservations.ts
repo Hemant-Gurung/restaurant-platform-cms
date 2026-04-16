@@ -35,6 +35,22 @@ export const Reservations: CollectionConfig = {
         }
         return data;
       },
+      async ({ data, operation, req }) => {
+        // Validate that the party size does not exceed the selected table's capacity
+        if (operation === "create" && data?.table && data?.partySize) {
+          const table = await req.payload.findByID({
+            collection: "tables",
+            id: data.table as string,
+            depth: 0,
+          });
+          if (table && (data.partySize as number) > (table.capacity as number)) {
+            throw new Error(
+              `Party size (${data.partySize}) exceeds the capacity of the selected table (${table.capacity}).`
+            );
+          }
+        }
+        return data;
+      },
     ],
     beforeChange: [
       ({ req, data }) => {
@@ -70,6 +86,7 @@ export const Reservations: CollectionConfig = {
                   <tr><td style="padding:4px 12px 4px 0;font-weight:bold;">Restaurant</td><td>${restaurantName}</td></tr>
                   <tr><td style="padding:4px 12px 4px 0;font-weight:bold;">Date & Time</td><td>${reservationDate}</td></tr>
                   <tr><td style="padding:4px 12px 4px 0;font-weight:bold;">Party Size</td><td>${doc.partySize}</td></tr>
+                  ${doc.type === "table" && doc.table ? `<tr><td style="padding:4px 12px 4px 0;font-weight:bold;">Table</td><td>${typeof doc.table === "object" ? (doc.table as { label?: string }).label ?? "Selected table" : "Selected table"}</td></tr>` : ""}
                   ${doc.notes ? `<tr><td style="padding:4px 12px 4px 0;font-weight:bold;">Notes</td><td>${doc.notes}</td></tr>` : ""}
                 </table>
                 <p style="margin-top:16px;color:#666;">If you need to make changes, please contact us directly.</p>
@@ -86,7 +103,7 @@ export const Reservations: CollectionConfig = {
   admin: {
     useAsTitle: "name",
     group: "Bookings",
-    defaultColumns: ["name", "restaurant", "date", "partySize", "status"],
+    defaultColumns: ["name", "restaurant", "date", "partySize", "type", "status"],
   },
   fields: [
     {
@@ -135,12 +152,25 @@ export const Reservations: CollectionConfig = {
       min: 1,
     },
     {
+      name: "type",
+      type: "select",
+      required: true,
+      defaultValue: "general",
+      options: [
+        { label: "General", value: "general" },
+        { label: "Table", value: "table" },
+      ],
+      admin: {
+        position: "sidebar",
+        description: "General = name/time only. Table = specific floor plan table selected.",
+      },
+    },
+    {
       name: "table",
       type: "relationship",
       relationTo: "tables",
       required: false,
       filterOptions: ({ siblingData }) => {
-        // Only show tables from the same restaurant
         const restaurant = (siblingData as Record<string, unknown>)?.restaurant;
         if (restaurant) return { restaurant: { equals: restaurant } };
         return true;
@@ -148,6 +178,7 @@ export const Reservations: CollectionConfig = {
       admin: {
         position: "sidebar",
         description: "The specific table the guest selected on the floor plan.",
+        condition: (_, siblingData) => siblingData?.type === "table",
       },
     },
     {

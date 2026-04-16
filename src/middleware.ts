@@ -68,6 +68,14 @@ export function middleware(req: NextRequest) {
         { status: 429, headers: { "Content-Type": "application/json", "Retry-After": "60" } }
       );
     }
+  } else if (pathname === "/api/availability" && method === "GET") {
+    const key = `availability:${ip}`;
+    if (isRateLimited(key, 30, 60_000)) {
+      return new NextResponse(
+        JSON.stringify({ error: "Too many availability requests. Please try again in a minute." }),
+        { status: 429, headers: { "Content-Type": "application/json", "Retry-After": "60" } }
+      );
+    }
   }
 
   return NextResponse.next();
@@ -79,5 +87,6 @@ export const config = {
   matcher: [
     "/api/reservations/:path*",
     "/api/contact-messages/:path*",
+    "/api/availability",
   ],
 };

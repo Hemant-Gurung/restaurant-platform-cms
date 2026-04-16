@@ -1,5 +1,6 @@
 import { buildConfig, type EmailAdapter, type SharpDependency } from "payload";
 import { postgresAdapter } from "@payloadcms/db-postgres";
+import { vercelBlobStorage } from "@payloadcms/storage-vercel-blob";
 import { resendAdapter } from "@payloadcms/email-resend";
 import { lexicalEditor } from "@payloadcms/richtext-lexical";
 import sharp from "sharp";
@@ -43,6 +44,16 @@ export default buildConfig({
     meta: {
       titleSuffix: "— Restaurant Admin",
     },
+    components: {
+      afterNavLinks: ["@/views/FloorPlanView/NavLink#default"],
+      views: {
+        floorPlan: {
+          Component: "@/views/FloorPlanView#default",
+          path: "/floor-plan",
+          exact: true,
+        },
+      },
+    },
   },
   endpoints: [
     {
@@ -62,6 +73,15 @@ export default buildConfig({
     Reservations,
     ContactMessages,
     Admins,
+  ],
+  plugins: [
+    vercelBlobStorage({
+      enabled: Boolean(process.env.BLOB_READ_WRITE_TOKEN),
+      token: process.env.BLOB_READ_WRITE_TOKEN ?? "",
+      collections: {
+        media: true,
+      },
+    }),
   ],
   sharp: sharp as unknown as SharpDependency,
   editor: lexicalEditor(),
