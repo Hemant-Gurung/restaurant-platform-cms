@@ -1,7 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "Bash(pnpm install:*)"
+      "Bash(git pull *)",
+      "Bash(git add *)",
+      "Bash(git rebase *)"
     ]
   }
 }
