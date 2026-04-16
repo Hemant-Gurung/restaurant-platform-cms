@@ -104,6 +104,6 @@ export default buildConfig({
           ? { rejectUnauthorized: process.env.DATABASE_SSL_REJECT_UNAUTHORIZED !== "false" }
           : false,
     },
-    push: process.env.NODE_ENV === "development",
+    push: process.env.NODE_ENV === "development" || process.env.PAYLOAD_PUSH === "true",
   }),
 });
