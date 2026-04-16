@@ -15,19 +15,37 @@ export function getRequestRestaurant(req: PayloadRequest): RestaurantSlug | null
 }
 
 /**
- * Read access for PUBLIC collections (menu items, categories).
+ * Read access for PUBLIC collections (sections, tables, menu items, categories).
  *
  * - API key with a restaurant → scoped WHERE filter (only that restaurant's docs)
- * - Admin panel or unauthenticated → full access (all docs)
+ * - Super-admin (authenticated, no restaurant field) → full access
+ * - Unauthenticated + ?restaurant=<slug> query param → scoped to that restaurant
+ * - Unauthenticated, no param → full access (public data)
+ *
+ * The ?restaurant= param lets the frontend filter without an API key.
+ * Always pass it: GET /api/sections?restaurant=my-restaurant
  */
 export function publicRestaurantRead({
   req,
 }: {
   req: PayloadRequest;
 }): boolean | Where {
+  // API key user with restaurant scope → auto-filter
   const restaurant = getRequestRestaurant(req);
   if (restaurant) {
     return { restaurant: { equals: restaurant } };
+  }
+  // Super-admin (authenticated, no restaurant field) → full access
+  if (req.user) return true;
+  // Unauthenticated → scope by ?restaurant= query param if provided
+  try {
+    const url = req.url ? new URL(req.url) : null;
+    const qRestaurant = url?.searchParams.get("restaurant");
+    if (qRestaurant) {
+      return { restaurant: { equals: qRestaurant } };
+    }
+  } catch {
+    // req.url may be relative in some contexts — fall through to full access
   }
   return true;
 }
