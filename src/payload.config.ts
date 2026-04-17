@@ -97,8 +97,9 @@ export default buildConfig({
   db: postgresAdapter({
     pool: {
       connectionString: process.env.DATABASE_URL,
-      // In production, validate SSL certificates. Set DATABASE_SSL_REJECT_UNAUTHORIZED=false
-      // only if your provider uses a self-signed cert (e.g. some Supabase connection poolers).
+      max: process.env.NODE_ENV === "production" ? 1 : 10,
+      idleTimeoutMillis: 30_000,
+      connectionTimeoutMillis: 5_000,
       ssl:
         process.env.NODE_ENV === "production"
           ? { rejectUnauthorized: process.env.DATABASE_SSL_REJECT_UNAUTHORIZED !== "false" }
