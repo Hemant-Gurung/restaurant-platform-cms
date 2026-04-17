@@ -15,6 +15,7 @@ import { Admins } from "./collections/Admins";
 import { Media } from "./collections/Media";
 import { Sections } from "./collections/Sections";
 import { Tables } from "./collections/Tables";
+import { Orders } from "./collections/Orders";
 import { availabilityHandler } from "./lib/availabilityEndpoint";
 
 const filename = fileURLToPath(import.meta.url);
@@ -70,6 +71,7 @@ export default buildConfig({
     Media,
     Sections,
     Tables,
+    Orders,
     Reservations,
     ContactMessages,
     Admins,
