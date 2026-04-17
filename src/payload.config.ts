@@ -97,10 +97,10 @@ export default buildConfig({
   db: postgresAdapter({
     pool: {
       connectionString: process.env.DATABASE_URL,
-      max: process.env.NODE_ENV === "production" ? 1 : 10,
-      idleTimeoutMillis: 30_000,
-      connectionTimeoutMillis: 10_000,
-      ssl: process.env.DATABASE_URL?.includes("supabase.com") ? { rejectUnauthorized: false } : false,
+      ssl:
+        process.env.NODE_ENV === "production"
+          ? { rejectUnauthorized: process.env.DATABASE_SSL_REJECT_UNAUTHORIZED !== "false" }
+          : false,
     },
     push: process.env.PAYLOAD_PUSH === "true",
   }),
