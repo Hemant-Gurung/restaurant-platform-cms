@@ -68,6 +68,14 @@ export function middleware(req: NextRequest) {
         { status: 429, headers: { "Content-Type": "application/json", "Retry-After": "60" } }
       );
     }
+  } else if (pathname === "/api/checkout" && method === "POST") {
+    const key = `checkout:${ip}`;
+    if (isRateLimited(key, 10, 60_000)) {
+      return new NextResponse(
+        JSON.stringify({ error: "Too many checkout requests. Please try again in a minute." }),
+        { status: 429, headers: { "Content-Type": "application/json", "Retry-After": "60" } }
+      );
+    }
   } else if (pathname === "/api/availability" && method === "GET") {
     const key = `availability:${ip}`;
     if (isRateLimited(key, 30, 60_000)) {
@@ -88,5 +96,6 @@ export const config = {
     "/api/reservations/:path*",
     "/api/contact-messages/:path*",
     "/api/availability",
+    "/api/checkout",
   ],
 };

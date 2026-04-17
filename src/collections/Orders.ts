@@ -97,6 +97,11 @@ export const Orders: CollectionConfig = {
       },
     },
     { name: "notes", type: "textarea" },
+    {
+      name: "stripeSessionId",
+      type: "text",
+      admin: { readOnly: true, position: "sidebar" },
+    },
   ],
   timestamps: true,
 };
