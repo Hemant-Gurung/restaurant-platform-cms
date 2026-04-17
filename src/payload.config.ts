@@ -100,7 +100,7 @@ export default buildConfig({
       max: process.env.NODE_ENV === "production" ? 1 : 10,
       idleTimeoutMillis: 30_000,
       connectionTimeoutMillis: 10_000,
-      ssl: process.env.NODE_ENV === "production" ? { rejectUnauthorized: false } : false,
+      ssl: process.env.DATABASE_URL?.includes("supabase.com") ? { rejectUnauthorized: false } : false,
     },
     push: process.env.PAYLOAD_PUSH === "true",
   }),
