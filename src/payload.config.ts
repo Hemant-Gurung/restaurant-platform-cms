@@ -99,7 +99,7 @@ export default buildConfig({
       connectionString: process.env.DATABASE_URL,
       max: process.env.NODE_ENV === "production" ? 1 : 10,
       idleTimeoutMillis: 30_000,
-      connectionTimeoutMillis: 5_000,
+      connectionTimeoutMillis: 10_000,
       ssl:
         process.env.NODE_ENV === "production"
           ? { rejectUnauthorized: process.env.DATABASE_SSL_REJECT_UNAUTHORIZED !== "false" }
