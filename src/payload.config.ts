@@ -17,6 +17,7 @@ import { Sections } from "./collections/Sections";
 import { Tables } from "./collections/Tables";
 import { Orders } from "./collections/Orders";
 import { availabilityHandler } from "./lib/availabilityEndpoint";
+import { restaurantConfigHandler } from "./lib/restaurantConfigEndpoint";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -63,6 +64,11 @@ meta: {
       path: "/availability",
       method: "get",
       handler: availabilityHandler,
+    },
+    {
+      path: "/restaurant-config",
+      method: "get",
+      handler: restaurantConfigHandler,
     },
   ],
   collections: [
