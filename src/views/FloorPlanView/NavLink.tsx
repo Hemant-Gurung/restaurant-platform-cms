@@ -2,10 +2,12 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { useNav } from '@payloadcms/ui'
 
 export default function FloorPlanNavLink() {
   const pathname = usePathname()
   const isActive = pathname === '/admin/floor-plan'
+  const { navOpen } = useNav()
 
   return (
     <Link
@@ -14,7 +16,7 @@ export default function FloorPlanNavLink() {
         display: 'flex',
         alignItems: 'center',
         gap: '8px',
-        padding: '8px 16px',
+        padding: navOpen ? '8px 16px' : '8px',
         borderRadius: '4px',
         textDecoration: 'none',
         fontSize: '14px',

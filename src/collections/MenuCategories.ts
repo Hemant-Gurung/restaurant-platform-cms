@@ -1,4 +1,5 @@
 import type { CollectionConfig } from "payload";
+import { RESTAURANTS } from "../lib/restaurants";
 import {
   publicRestaurantRead,
   restaurantCreate,
@@ -40,10 +41,7 @@ export const MenuCategories: CollectionConfig = {
       type: "select",
       required: true,
       defaultValue: "my-restaurant",
-      options: [
-        { label: "My Restaurant", value: "my-restaurant" },
-        { label: "Verde Kitchen", value: "verde-kitchen" },
-      ],
+      options: RESTAURANTS,
       admin: {
         description: "Which restaurant this category belongs to",
         // Hide from scoped admins — it is auto-stamped for them via beforeChange

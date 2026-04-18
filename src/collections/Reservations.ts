@@ -1,4 +1,5 @@
 import type { CollectionConfig } from "payload";
+import { RESTAURANTS } from "../lib/restaurants";
 import { privateRestaurantRead, restaurantCreate, getRequestRestaurant } from "../lib/access";
 
 const RESTAURANT_LABELS: Record<string, string> = {
@@ -110,10 +111,7 @@ export const Reservations: CollectionConfig = {
       name: "restaurant",
       type: "select",
       required: true,
-      options: [
-        { label: "My Restaurant", value: "my-restaurant" },
-        { label: "Verde Kitchen", value: "verde-kitchen" },
-      ],
+      options: RESTAURANTS,
       admin: {
         position: "sidebar",
         description: "Auto-populated from the app's API key",

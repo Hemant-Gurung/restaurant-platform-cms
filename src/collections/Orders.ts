@@ -1,4 +1,5 @@
 import type { CollectionConfig } from "payload";
+import { RESTAURANTS } from "../lib/restaurants";
 import { privateRestaurantRead, stampRestaurant } from "../lib/access";
 
 export const Orders: CollectionConfig = {
@@ -23,10 +24,7 @@ export const Orders: CollectionConfig = {
       name: "restaurant",
       type: "select",
       required: true,
-      options: [
-        { label: "My Restaurant", value: "my-restaurant" },
-        { label: "Verde Kitchen", value: "verde-kitchen" },
-      ],
+      options: RESTAURANTS,
       admin: {
         position: "sidebar",
         readOnly: true,

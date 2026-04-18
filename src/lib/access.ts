@@ -1,6 +1,7 @@
 import type { PayloadRequest, Where } from "payload";
+import { type RestaurantSlug } from "./restaurants";
 
-export type RestaurantSlug = "my-restaurant" | "verde-kitchen";
+export type { RestaurantSlug };
 
 /**
  * Extracts the restaurant slug from the authenticated request.

@@ -1,4 +1,5 @@
 import type { CollectionConfig } from "payload";
+import { RESTAURANTS } from "../lib/restaurants";
 import path from "path";
 import { fileURLToPath } from "url";
 import { publicRestaurantRead, restaurantUpdate, restaurantDelete, stampRestaurant, getRequestRestaurant } from "../lib/access";
@@ -51,10 +52,7 @@ export const Media: CollectionConfig = {
       name: "restaurant",
       type: "select",
       required: true,
-      options: [
-        { label: "My Restaurant", value: "my-restaurant" },
-        { label: "Verde Kitchen", value: "verde-kitchen" },
-      ],
+      options: RESTAURANTS,
       admin: {
         position: "sidebar",
         description: "Auto-populated on upload",

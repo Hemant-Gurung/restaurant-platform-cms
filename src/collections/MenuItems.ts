@@ -1,4 +1,5 @@
 import type { CollectionConfig } from "payload";
+import { RESTAURANTS } from "../lib/restaurants";
 import {
   publicRestaurantRead,
   restaurantCreate,
@@ -25,7 +26,7 @@ export const MenuItems: CollectionConfig = {
   admin: {
     useAsTitle: "name",
     group: "Menu",
-    defaultColumns: ["name", "restaurant", "category", "price", "available"],
+    defaultColumns: ["name","category", "price", "available"],
     components: {
       beforeListTable: ["@/components/MenuItemCategoryFilter"],
     },
@@ -56,10 +57,7 @@ export const MenuItems: CollectionConfig = {
       type: "select",
       required: true,
       defaultValue: "my-restaurant",
-      options: [
-        { label: "My Restaurant", value: "my-restaurant" },
-        { label: "Verde Kitchen", value: "verde-kitchen" },
-      ],
+      options: RESTAURANTS,
       admin: {
         position: "sidebar",
         description: "Which restaurant this item belongs to",

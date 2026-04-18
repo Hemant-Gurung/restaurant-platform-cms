@@ -42,7 +42,7 @@ export default buildConfig({
   csrf: [...devOrigins, ...allowedOrigins, serverURL],
   admin: {
     user: Admins.slug,
-    meta: {
+meta: {
       titleSuffix: "— Restaurant Admin",
     },
     components: {

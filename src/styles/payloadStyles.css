@@ -5,3 +5,8 @@
    skipped to avoid resetting Payload's admin base styles. */
 @import 'tailwindcss/theme.css' layer(tw-theme);
 @import 'tailwindcss/utilities.css' layer(tw-utilities);
+
+/* Indent nav group children when the sidebar is open */
+.template-default--nav-open .nav-group__content {
+  padding-left: 12px;
+}

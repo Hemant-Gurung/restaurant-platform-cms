@@ -1,4 +1,5 @@
 import type { CollectionConfig } from "payload";
+import { RESTAURANTS } from "../lib/restaurants";
 
 /** True only for super-admins (no restaurant field set). */
 const isSuperAdmin = (user: unknown): boolean =>
@@ -41,14 +42,12 @@ export const Admins: CollectionConfig = {
       type: "select",
       // Leave empty for super-admins who manage all restaurants.
       // Set to a restaurant slug for app-specific API key users.
-      options: [
-        { label: "My Restaurant", value: "my-restaurant" },
-        { label: "Verde Kitchen", value: "verde-kitchen" },
-      ],
+      options: RESTAURANTS,
       admin: {
         position: "sidebar",
         description:
           "Scope this admin to a single restaurant. Leave blank for full access (super-admin).",
+        condition: (_, __, { user }) => isSuperAdmin(user),
       },
     },
   ],

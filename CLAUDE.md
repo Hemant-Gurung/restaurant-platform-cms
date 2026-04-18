@@ -25,6 +25,27 @@ This is a **Payload CMS v3 + Next.js App Router** project serving as a headless 
 
 The central design pattern is restaurant-scoping. Every collection has a `restaurant` field (a select enum, not a relationship). Access control and data isolation are enforced via helpers in [src/lib/access.ts](src/lib/access.ts):
 
+#### Adding a new restaurant
+
+All restaurant options are centralised in [src/lib/restaurants.ts](src/lib/restaurants.ts). To add a new restaurant:
+
+1. Add a new entry to `RESTAURANTS` and extend the `RestaurantSlug` union:
+
+```ts
+export const RESTAURANTS: { label: string; value: string }[] = [
+  { label: "My Restaurant", value: "my-restaurant" },
+  { label: "Verde Kitchen", value: "verde-kitchen" },
+  { label: "New Restaurant", value: "new-restaurant" }, // ← add here
+];
+
+export type RestaurantSlug = "my-restaurant" | "verde-kitchen" | "new-restaurant";
+```
+
+1. Deploy — no DB migration needed (the field is a plain text select, not a FK).
+1. In the admin panel, a super-admin can assign the new slug to any admin account.
+
+**Do not** edit restaurant options in individual collection files — they all import from `src/lib/restaurants.ts`.
+
 - `stampRestaurant()` — a `beforeChange` hook that auto-populates the `restaurant` field from the authenticated admin's restaurant
 - `publicRestaurantRead()` / `privateRestaurantRead()` — filter queries by restaurant slug from the request
 - `getRequestRestaurant()` — extracts the restaurant slug from the authenticated user's token

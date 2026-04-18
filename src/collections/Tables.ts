@@ -1,4 +1,5 @@
 import type { CollectionConfig } from "payload";
+import { RESTAURANTS } from "../lib/restaurants";
 import {
   publicRestaurantRead,
   restaurantCreate,
@@ -49,10 +50,7 @@ export const Tables: CollectionConfig = {
       type: "select",
       required: true,
       defaultValue: "my-restaurant",
-      options: [
-        { label: "My Restaurant", value: "my-restaurant" },
-        { label: "Verde Kitchen", value: "verde-kitchen" },
-      ],
+      options: RESTAURANTS,
       admin: {
         position: "sidebar",
         condition: (_, _siblingData, { user }) =>
