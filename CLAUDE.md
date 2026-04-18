@@ -31,6 +31,8 @@ The central design pattern is restaurant-scoping. Every collection has a `restau
 
 All collections attach `stampRestaurant` as a `beforeChange` hook, so the restaurant is always stamped server-side rather than trusted from the client.
 
+The `restaurant` field uses `admin.condition` to hide it from scoped admins in the UI (they only have one restaurant; it is auto-stamped). Super-admins see and can set the field manually.
+
 ### Payload Config
 
 [src/payload.config.ts](src/payload.config.ts) is the single source of truth. Key settings:
@@ -38,7 +40,7 @@ All collections attach `stampRestaurant` as a `beforeChange` hook, so the restau
 - **Database**: PostgreSQL via `DATABASE_URL`; `push: true` in development (schema auto-syncs without migrations)
 - **Email**: Resend adapter, configured via `RESEND_API_KEY` and `RESEND_FROM_EMAIL`
 - **CORS/CSRF**: Both explicitly set to `[...devOrigins, ...allowedOrigins, serverURL]` where `devOrigins` includes `localhost:3000/3001/3002` in development. This is required — Payload only auto-adds `serverURL` to CSRF, so localhost POST requests fail if `NEXT_PUBLIC_SERVER_URL` points to a production domain.
-- **Media**: Uploads stored in `/public/media`, generates a 400×300 thumbnail
+- **Media**: Uploads stored via Vercel Blob (`BLOB_READ_WRITE_TOKEN`). Configured with `prefix: ""` so the plugin tracks a per-document `prefix` field in the DB. Generates a 400×300 thumbnail.
 - **Custom view**: Floor Plan editor registered under `admin.components.views.floorPlan`
 
 ### Collections
@@ -48,13 +50,30 @@ All collections attach `stampRestaurant` as a `beforeChange` hook, so the restau
 | Admins           | `admins`           | Auth + API key; optional restaurant scope   |
 | MenuCategories   | `menu-categories`  | Public read (restaurant-scoped)             |
 | MenuItems        | `menu-items`       | Public read (restaurant-scoped)             |
-| Media            | `media`            | Standard upload                             |
+| Media            | `media`            | Public read (restaurant-scoped); auth write |
 | Sections         | `sections`         | Public read (restaurant-scoped); auth write |
 | Tables           | `tables`           | Public read (restaurant-scoped); auth write |
 | Reservations     | `reservations`     | Authenticated read; no deletes              |
 | ContactMessages  | `contact-messages` | Authenticated read; no updates/deletes      |
 
 `Admins` without a restaurant set are treated as super-admins with access to all restaurants.
+
+### Media Collection
+
+`src/collections/Media.ts` — restaurant-scoped image uploads via Vercel Blob.
+
+**Vercel Blob folder structure:**
+
+Files are stored as `<restaurant-slug>/<filename>` (e.g. `my-restaurant/momo.jpg`). This is achieved via two cooperating pieces:
+
+1. `vercelBlobStorage` is configured with `media: { prefix: "" }` — this enables the plugin's per-document `prefix` field in the DB.
+2. The `beforeChange` hook sets `data.prefix = restaurant` (the scoped user's restaurant slug) before the document is saved. The plugin's `afterChange` hook then reads `doc.prefix` to construct the Vercel Blob path.
+
+Super-admins (no restaurant on their token) upload without a prefix (root of the blob store).
+
+The Payload static handler URL (`/api/media/file/<filename>`) does **not** contain the prefix — the handler looks up `doc.prefix` from the DB at serve time to reconstruct the full blob path. Existing files uploaded without a prefix continue to work.
+
+**Why `/` in `req.file.name` does not work:** Payload sanitizes filenames before storage, stripping `/`. The plugin's `prefix` field is the only correct mechanism for creating Vercel Blob folder paths.
 
 ### Floor Plan Collections
 
@@ -221,6 +240,7 @@ See [.env.example](.env.example):
 - `ALLOWED_ORIGINS` — Comma-separated list of additional allowed CORS/CSRF origins
 - `RESEND_API_KEY` / `RESEND_FROM_EMAIL` — Optional email sending
 - `DATABASE_SSL_REJECT_UNAUTHORIZED` — Set to `false` if your production DB uses a self-signed cert
+- `BLOB_READ_WRITE_TOKEN` — Vercel Blob store token; when absent the plugin is disabled and files fall back to local `/public/media`
 
 ### Generated Files
 
