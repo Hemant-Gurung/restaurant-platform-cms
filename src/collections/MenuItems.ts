@@ -26,7 +26,7 @@ export const MenuItems: CollectionConfig = {
   admin: {
     useAsTitle: "name",
     group: "Menu",
-    defaultColumns: ["name","category", "price", "available"],
+    defaultColumns: ["name", "category", "price", "available"],
     components: {
       beforeListTable: ["@/components/MenuItemCategoryFilter"],
     },

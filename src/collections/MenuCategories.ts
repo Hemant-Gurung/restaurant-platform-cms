@@ -25,7 +25,7 @@ export const MenuCategories: CollectionConfig = {
   admin: {
     useAsTitle: "name",
     group: "Menu",
-    defaultColumns: ["name", "restaurant", "createdAt"],
+    defaultColumns: ["name", "createdAt"],
   },
   fields: [
     {

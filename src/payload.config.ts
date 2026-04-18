@@ -16,6 +16,7 @@ import { Media } from "./collections/Media";
 import { Sections } from "./collections/Sections";
 import { Tables } from "./collections/Tables";
 import { Orders } from "./collections/Orders";
+import { Restaurants } from "./collections/Restaurants";
 import { availabilityHandler } from "./lib/availabilityEndpoint";
 import { restaurantConfigHandler } from "./lib/restaurantConfigEndpoint";
 
@@ -81,6 +82,7 @@ meta: {
     Reservations,
     ContactMessages,
     Admins,
+    Restaurants,
   ],
   plugins: [
     vercelBlobStorage({
