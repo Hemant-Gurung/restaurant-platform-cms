@@ -2,13 +2,14 @@
   "name": "cms",
   "version": "0.0.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev --port 3002",
     "build": "next build",
     "start": "next start --port 3002",
-    "generate:types": "PAYLOAD_CONFIG_PATH=src/payload.config.ts payload generate:types",
-    "migrate:create": "PAYLOAD_CONFIG_PATH=src/payload.config.ts payload migrate:create",
-    "migrate": "PAYLOAD_CONFIG_PATH=src/payload.config.ts payload migrate"
+    "generate:types": "PAYLOAD_CONFIG_PATH=src/payload.config.ts payload --use-swc generate:types",
+    "migrate:create": "PAYLOAD_CONFIG_PATH=src/payload.config.ts payload --use-swc migrate:create",
+    "migrate": "PAYLOAD_CONFIG_PATH=src/payload.config.ts payload --use-swc migrate"
   },
   "dependencies": {
     "@payloadcms/db-postgres": "3.82.1",
@@ -28,6 +29,8 @@
     "tailwindcss": "^4.2.2"
   },
   "devDependencies": {
+    "@swc-node/register": "^1.11.1",
+    "@swc/core": "^1.15.26",
     "@types/node": "^22.0.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",

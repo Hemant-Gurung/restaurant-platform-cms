@@ -39,6 +39,30 @@ export const Restaurants: CollectionConfig = {
         { label: "Takeaway", value: "takeaway" },
       ],
     },
+    {
+      name: "onlineOrdering",
+      type: "checkbox",
+      defaultValue: false,
+      admin: {
+        description: "Enable online ordering and Stripe payments for this restaurant",
+      },
+    },
+    {
+      name: "stripeSecretKey",
+      type: "text",
+      admin: {
+        description: "Stripe secret key (sk_live_... or sk_test_...) from the restaurant's Stripe dashboard",
+        condition: (_, siblingData) => Boolean(siblingData?.onlineOrdering),
+      },
+    },
+    {
+      name: "stripeWebhookSecret",
+      type: "text",
+      admin: {
+        description: "Stripe webhook signing secret (whsec_...) — register webhook URL as: /api/webhooks/stripe/<slug>",
+        condition: (_, siblingData) => Boolean(siblingData?.onlineOrdering),
+      },
+    },
   ],
   timestamps: true,
 };

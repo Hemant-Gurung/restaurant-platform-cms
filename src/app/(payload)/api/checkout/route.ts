@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
+import { getPayload } from "payload";
+import config from "@payload-config";
 
 export async function POST(req: NextRequest) {
-  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? "");
   try {
     const { restaurant, type, customer, items, tableNumber, notes, successUrl, cancelUrl } =
       await req.json();
@@ -10,6 +11,28 @@ export async function POST(req: NextRequest) {
     if (!restaurant || !type || !customer?.name || !customer?.phone || !items?.length || !successUrl || !cancelUrl) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
+
+    const payload = await getPayload({ config });
+    const result = await payload.find({
+      collection: "restaurants",
+      where: { slug: { equals: restaurant } },
+      limit: 1,
+      depth: 0,
+      overrideAccess: true,
+    });
+
+    const restaurantDoc = result.docs[0] as
+      | { onlineOrdering?: boolean; stripeSecretKey?: string }
+      | undefined;
+
+    if (!restaurantDoc?.onlineOrdering) {
+      return NextResponse.json({ error: "Online ordering is not available for this restaurant" }, { status: 403 });
+    }
+    if (!restaurantDoc.stripeSecretKey) {
+      return NextResponse.json({ error: "Stripe is not configured for this restaurant" }, { status: 503 });
+    }
+
+    const stripe = new Stripe(restaurantDoc.stripeSecretKey);
 
     const lineItems = items.map((item: { name: string; price: number; quantity: number }) => ({
       price_data: {

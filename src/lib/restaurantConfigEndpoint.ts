@@ -21,5 +21,10 @@ export const restaurantConfigHandler: PayloadHandler = async (req) => {
     return Response.json({ error: "Unknown restaurant" }, { status: 404 });
   }
 
-  return Response.json({ slug: config.slug, label: config.name, type: config.type });
+  return Response.json({
+    slug: config.slug,
+    label: config.name,
+    type: config.type,
+    onlineOrdering: config.onlineOrdering ?? false,
+  });
 };

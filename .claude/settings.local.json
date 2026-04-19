@@ -5,7 +5,8 @@
       "Bash(git add *)",
       "Bash(git rebase *)",
       "Bash(find /Users/hemantgurung/MyProject/api/restaurant-platform-cms/node_modules/.pnpm/@payloadcms+next@3.82.1_*/node_modules/@payloadcms/next/dist -name \"template*\" -o -name \"*template*\")",
-      "Bash(find /Users/hemantgurung/MyProject/api/restaurant-platform-cms/node_modules/.pnpm/@payloadcms+next@3.82.1_*/node_modules/@payloadcms/next/dist/templates -name \"*.js\")"
+      "Bash(find /Users/hemantgurung/MyProject/api/restaurant-platform-cms/node_modules/.pnpm/@payloadcms+next@3.82.1_*/node_modules/@payloadcms/next/dist/templates -name \"*.js\")",
+      "Bash(pnpm generate:types)"
     ]
   }
 }

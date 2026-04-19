@@ -3,18 +3,37 @@ import Stripe from "stripe";
 import { getPayload } from "payload";
 import config from "@payload-config";
 
-export async function POST(req: NextRequest) {
-  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? "");
+export async function POST(req: NextRequest, { params }: { params: Promise<{ restaurant: string }> }) {
+  const { restaurant: restaurantSlug } = await params;
   const body = await req.text();
   const sig = req.headers.get("stripe-signature");
 
-  if (!sig || !process.env.STRIPE_WEBHOOK_SECRET) {
+  if (!sig) {
     return NextResponse.json({ error: "Missing signature" }, { status: 400 });
   }
 
+  const payload = await getPayload({ config });
+  const result = await payload.find({
+    collection: "restaurants",
+    where: { slug: { equals: restaurantSlug } },
+    limit: 1,
+    depth: 0,
+    overrideAccess: true,
+  });
+
+  const restaurantDoc = result.docs[0] as
+    | { stripeSecretKey?: string; stripeWebhookSecret?: string }
+    | undefined;
+
+  if (!restaurantDoc?.stripeSecretKey || !restaurantDoc?.stripeWebhookSecret) {
+    return NextResponse.json({ error: "Stripe not configured for this restaurant" }, { status: 400 });
+  }
+
+  const stripe = new Stripe(restaurantDoc.stripeSecretKey);
+
   let event: Stripe.Event;
   try {
-    event = stripe.webhooks.constructEvent(body, sig, process.env.STRIPE_WEBHOOK_SECRET);
+    event = stripe.webhooks.constructEvent(body, sig, restaurantDoc.stripeWebhookSecret);
   } catch (err) {
     console.error("Webhook signature failed:", err);
     return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
@@ -32,7 +51,6 @@ export async function POST(req: NextRequest) {
         quantity: item.quantity ?? 1,
       }));
 
-      const payload = await getPayload({ config });
       await payload.create({
         collection: "orders",
         data: {
@@ -50,10 +68,10 @@ export async function POST(req: NextRequest) {
           notes: meta.notes || undefined,
           stripeSessionId: session.id,
         },
+        overrideAccess: true,
       });
     } catch (err) {
       console.error("Failed to create order:", err);
-      // Return 500 so Stripe retries the webhook
       return NextResponse.json({ error: "Failed to create order" }, { status: 500 });
     }
   }
