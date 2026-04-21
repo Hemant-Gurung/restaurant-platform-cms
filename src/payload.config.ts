@@ -17,6 +17,8 @@ import { Sections } from "./collections/Sections";
 import { Tables } from "./collections/Tables";
 import { Orders } from "./collections/Orders";
 import { Restaurants } from "./collections/Restaurants";
+import { SiteContent } from "./collections/SiteContent";
+import { Videos } from "./collections/Videos";
 import { availabilityHandler } from "./lib/availabilityEndpoint";
 import { restaurantConfigHandler } from "./lib/restaurantConfigEndpoint";
 
@@ -36,6 +38,15 @@ const serverURL = process.env.NEXT_PUBLIC_SERVER_URL ?? "http://localhost:3002";
 
 export default buildConfig({
   serverURL,
+  localization: {
+    locales: [
+      { label: "English", code: "en" },
+      { label: "French", code: "fr" },
+      { label: "Dutch", code: "nl" },
+    ],
+    defaultLocale: "en",
+    fallback: true,
+  },
   cors: [...devOrigins, ...allowedOrigins, serverURL],
   // csrf must include every origin that sends cookie-authenticated POST requests.
   // Payload only adds serverURL automatically — add dev localhost explicitly so
@@ -83,6 +94,8 @@ meta: {
     ContactMessages,
     Admins,
     Restaurants,
+    SiteContent,
+    Videos,
   ],
   plugins: [
     vercelBlobStorage({
@@ -90,7 +103,8 @@ meta: {
       token: process.env.BLOB_READ_WRITE_TOKEN ?? "",
       collections: {
         media: { prefix: "" },
-      },
+        videos: { prefix: "" },
+      } as Record<string, { prefix: string }>,
     }),
   ],
   sharp: sharp as unknown as SharpDependency,
