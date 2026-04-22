@@ -6,14 +6,16 @@ import {
   restaurantUpdate,
   restaurantDelete,
   stampRestaurant,
-  getRequestRestaurant,
 } from "../lib/access";
 
 export const MenuItems: CollectionConfig = {
   slug: "menu-items",
+  labels: {
+    singular: { en: "Menu Item", fr: "Article du menu", nl: "Menu-item" },
+    plural: { en: "Menu Items", fr: "Articles du menu", nl: "Menu-items" },
+  },
   access: {
     read: publicRestaurantRead,
-    // Scoped admins can only create/update/delete their own restaurant's items
     create: restaurantCreate,
     update: restaurantUpdate,
     delete: restaurantDelete,
@@ -25,7 +27,7 @@ export const MenuItems: CollectionConfig = {
   },
   admin: {
     useAsTitle: "name",
-    group: "Menu",
+    group: { en: "Menu", fr: "Menu", nl: "Menu" },
     defaultColumns: ["name", "category", "price", "available"],
     components: {
       beforeListTable: ["@/components/MenuItemCategoryFilter"],
@@ -36,17 +38,20 @@ export const MenuItems: CollectionConfig = {
       name: "name",
       type: "text",
       required: true,
+      label: { en: "Name", fr: "Nom", nl: "Naam" },
     },
     {
       name: "description",
       type: "textarea",
       required: true,
+      label: { en: "Description", fr: "Description", nl: "Beschrijving" },
     },
     {
       name: "price",
       type: "number",
       required: true,
       min: 0,
+      label: { en: "Price", fr: "Prix", nl: "Prijs" },
       admin: {
         step: 0.01,
         placeholder: "0.00",
@@ -58,10 +63,14 @@ export const MenuItems: CollectionConfig = {
       required: true,
       defaultValue: "my-restaurant",
       options: RESTAURANTS,
+      label: { en: "Restaurant", fr: "Restaurant", nl: "Restaurant" },
       admin: {
         position: "sidebar",
-        description: "Which restaurant this item belongs to",
-        // Hide from scoped admins — it is auto-stamped for them via beforeChange
+        description: {
+          en: "Which restaurant this item belongs to",
+          fr: "À quel restaurant appartient cet article",
+          nl: "Bij welk restaurant dit item hoort",
+        },
         condition: (_, siblingData, { user }) => {
           return !((user as Record<string, unknown>)?.restaurant);
         },
@@ -71,8 +80,13 @@ export const MenuItems: CollectionConfig = {
       name: "available",
       type: "checkbox",
       defaultValue: true,
+      label: { en: "Available", fr: "Disponible", nl: "Beschikbaar" },
       admin: {
-        description: "Uncheck to hide this item from the menu",
+        description: {
+          en: "Uncheck to hide this item from the menu",
+          fr: "Décochez pour masquer cet article du menu",
+          nl: "Uitvinken om dit item te verbergen in het menu",
+        },
       },
     },
     {
@@ -80,7 +94,7 @@ export const MenuItems: CollectionConfig = {
       type: "relationship",
       relationTo: "menu-categories",
       required: true,
-      // Only show categories that belong to the same restaurant as the current user
+      label: { en: "Category", fr: "Catégorie", nl: "Categorie" },
       filterOptions: ({ user }) => {
         const restaurant = (user as Record<string, unknown>)?.restaurant;
         if (restaurant) {
@@ -96,9 +110,14 @@ export const MenuItems: CollectionConfig = {
       name: "image",
       type: "upload",
       relationTo: "media",
+      label: { en: "Image", fr: "Image", nl: "Afbeelding" },
       admin: {
         position: "sidebar",
-        description: "Optional dish photo",
+        description: {
+          en: "Optional dish photo",
+          fr: "Photo du plat (optionnel)",
+          nl: "Optionele gerechfoto",
+        },
       },
     },
   ],
