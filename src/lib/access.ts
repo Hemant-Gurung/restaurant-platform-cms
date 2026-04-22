@@ -12,7 +12,7 @@ export type { RestaurantSlug };
  */
 export function getRequestRestaurant(req: PayloadRequest): RestaurantSlug | null {
   if (!req.user) return null;
-  return ((req.user as Record<string, unknown>).restaurant as RestaurantSlug) ?? null;
+  return ((req.user as unknown as Record<string, unknown>).restaurant as RestaurantSlug) ?? null;
 }
 
 /**

@@ -26,10 +26,22 @@ export const SiteContent: CollectionConfig = {
       type: "select",
       required: true,
       options: RESTAURANTS,
+      defaultValue: ({ user }: { user: unknown }) =>
+        ((user as unknown) as Record<string, unknown>)?.restaurant as string | undefined,
       admin: {
         position: "sidebar",
         condition: (_, siblingData, { user }) => {
-          return !((user as Record<string, unknown>)?.restaurant);
+          return !((user as unknown as Record<string, unknown>)?.restaurant);
+        },
+      },
+    },
+    // — Auto-translate —
+    {
+      name: "translateHelper",
+      type: "ui",
+      admin: {
+        components: {
+          Field: "@/components/TranslateButton#default",
         },
       },
     },
