@@ -15,9 +15,13 @@ export const SiteContent: CollectionConfig = {
       ({ req, data }) => stampRestaurant({ req, data }),
     ],
   },
+  labels: {
+    singular: { en: "Site Content", fr: "Contenu du site", nl: "Site-inhoud" },
+    plural: { en: "Site Content", fr: "Contenu du site", nl: "Site-inhoud" },
+  },
   admin: {
     useAsTitle: "restaurant",
-    group: "Settings",
+    group: { en: "Settings", fr: "Paramètres", nl: "Instellingen" },
     defaultColumns: ["restaurant", "updatedAt"],
   },
   fields: [

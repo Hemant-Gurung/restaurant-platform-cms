@@ -28,11 +28,14 @@ export const Admins: CollectionConfig = {
     create: ({ req }) => isSuperAdmin(req.user),
     delete: ({ req }) => isSuperAdmin(req.user),
   },
+  labels: {
+    singular: { en: "Admin", fr: "Administrateur", nl: "Beheerder" },
+    plural: { en: "Admins", fr: "Administrateurs", nl: "Beheerders" },
+  },
   admin: {
     useAsTitle: "email",
-    group: "Settings",
+    group: { en: "Settings", fr: "Paramètres", nl: "Instellingen" },
     defaultColumns: ["email", "restaurant", "createdAt"],
-    // Hide the entire Admins section from the sidebar for scoped admins
     hidden: ({ user }) => !isSuperAdmin(user),
   },
   fields: [

@@ -29,11 +29,19 @@ export const Tables: CollectionConfig = {
       ({ req, data }) => stampRestaurant({ req, data }),
     ],
   },
+  labels: {
+    singular: { en: "Table", fr: "Table", nl: "Tafel" },
+    plural: { en: "Tables", fr: "Tables", nl: "Tafels" },
+  },
   admin: {
     useAsTitle: "label",
-    group: "Floor Plan",
+    group: { en: "Floor Plan", fr: "Plan de salle", nl: "Plattegrond" },
     defaultColumns: ["label", "section", "capacity", "shape", "isActive", "restaurant"],
-    description: "Individual tables. Position them using percentage coordinates on the floor plan.",
+    description: {
+      en: "Individual tables. Position them using percentage coordinates on the floor plan.",
+      fr: "Tables individuelles. Positionnez-les avec des coordonnées en pourcentage sur le plan.",
+      nl: "Individuele tafels. Positioneer ze met procentuele coördinaten op de plattegrond.",
+    },
   },
   fields: [
     {

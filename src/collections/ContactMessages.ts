@@ -4,6 +4,7 @@ import { privateRestaurantRead, restaurantCreate, getRequestRestaurant } from ".
 
 export const ContactMessages: CollectionConfig = {
   slug: "contact-messages",
+  
   access: {
     // Only accessible to authenticated users; API key users see only their restaurant's messages
     read: privateRestaurantRead,
@@ -25,9 +26,13 @@ export const ContactMessages: CollectionConfig = {
       },
     ],
   },
+  labels: {
+    singular: { en: "Contact Message", fr: "Message de contact", nl: "Contactbericht" },
+    plural: { en: "Contact Messages", fr: "Messages de contact", nl: "Contactberichten" },
+  },
   admin: {
     useAsTitle: "name",
-    group: "Bookings",
+    group: { en: "Bookings", fr: "Réservations", nl: "Boekingen" },
     defaultColumns: ["name", "restaurant", "email", "createdAt"],
   },
   fields: [

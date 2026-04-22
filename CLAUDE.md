@@ -54,6 +54,47 @@ All collections attach `stampRestaurant` as a `beforeChange` hook, so the restau
 
 The `restaurant` field uses `admin.condition` to hide it from scoped admins in the UI (they only have one restaurant; it is auto-stamped). Super-admins see and can set the field manually.
 
+### Adding a new collection
+
+When adding a new collection, always include translated `labels` and `group` for EN, FR, and NL. This is required — without it the admin UI shows untranslated English strings when the language is switched.
+
+```ts
+export const MyCollection: CollectionConfig = {
+  slug: "my-collection",
+  labels: {
+    singular: { en: "My Item", fr: "Mon élément", nl: "Mijn item" },
+    plural: { en: "My Items", fr: "Mes éléments", nl: "Mijn items" },
+  },
+  admin: {
+    group: { en: "Menu", fr: "Menu", nl: "Menu" },
+    // ...
+  },
+  fields: [
+    {
+      name: "title",
+      type: "text",
+      label: { en: "Title", fr: "Titre", nl: "Titel" },
+      admin: {
+        description: {
+          en: "English description",
+          fr: "Description en français",
+          nl: "Beschrijving in het Nederlands",
+        },
+      },
+    },
+  ],
+}
+```
+
+Also translate individual field `label` and `admin.description` strings. The supported groups and their translations are:
+
+| EN | FR | NL |
+| --- | --- | --- |
+| Menu | Menu | Menu |
+| Bookings | Réservations | Boekingen |
+| Floor Plan | Plan de salle | Plattegrond |
+| Settings | Paramètres | Instellingen |
+
 ### Payload Config
 
 [src/payload.config.ts](src/payload.config.ts) is the single source of truth. Key settings:

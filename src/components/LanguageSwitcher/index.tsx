@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
 
 const LANGUAGES = [
   { code: "en", label: "EN" },
@@ -8,19 +8,22 @@ const LANGUAGES = [
   { code: "nl", label: "NL" },
 ];
 
-function getCurrentLang(): string {
-  if (typeof document === "undefined") return "en";
+function readLangCookie(): string {
   const match = document.cookie.match(/(?:^|;\s*)payload-lng=([^;]+)/);
   return match?.[1] ?? navigator.language.slice(0, 2) ?? "en";
 }
 
 export default function LanguageSwitcher() {
-  const router = useRouter();
-  const current = getCurrentLang();
+  const [current, setCurrent] = useState("en");
+
+  useEffect(() => {
+    setCurrent(readLangCookie());
+  }, []);
 
   const switchLang = (code: string) => {
     document.cookie = `payload-lng=${code}; path=/; max-age=31536000`;
-    router.refresh();
+    setCurrent(code);
+    window.location.reload();
   };
 
   return (

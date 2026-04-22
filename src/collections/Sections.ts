@@ -26,11 +26,19 @@ export const Sections: CollectionConfig = {
       ({ req, data }) => stampRestaurant({ req, data }),
     ],
   },
+  labels: {
+    singular: { en: "Section", fr: "Section", nl: "Sectie" },
+    plural: { en: "Sections", fr: "Sections", nl: "Secties" },
+  },
   admin: {
     useAsTitle: "name",
-    group: "Floor Plan",
+    group: { en: "Floor Plan", fr: "Plan de salle", nl: "Plattegrond" },
     defaultColumns: ["name", "restaurant", "order", "isActive"],
-    description: "Named areas of your restaurant (e.g. Main Floor, Patio, Bar).",
+    description: {
+      en: "Named areas of your restaurant (e.g. Main Floor, Patio, Bar).",
+      fr: "Zones nommées de votre restaurant (ex. Salle principale, Terrasse, Bar).",
+      nl: "Benoemde zones van uw restaurant (bijv. Hoofdzaal, Terras, Bar).",
+    },
   },
   fields: [
     {

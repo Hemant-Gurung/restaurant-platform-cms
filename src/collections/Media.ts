@@ -30,8 +30,12 @@ export const Media: CollectionConfig = {
       },
     ],
   },
+  labels: {
+    singular: { en: "Media", fr: "Média", nl: "Media" },
+    plural: { en: "Media", fr: "Médias", nl: "Media" },
+  },
   admin: {
-    group: "Settings",
+    group: { en: "Settings", fr: "Paramètres", nl: "Instellingen" },
     defaultColumns: ["filename", "alt", "createdAt"],
   },
   upload: {
@@ -53,9 +57,14 @@ export const Media: CollectionConfig = {
       type: "select",
       required: true,
       options: RESTAURANTS,
+      label: { en: "Restaurant", fr: "Restaurant", nl: "Restaurant" },
       admin: {
         position: "sidebar",
-        description: "Auto-populated on upload",
+        description: {
+          en: "Auto-populated on upload",
+          fr: "Rempli automatiquement lors du téléchargement",
+          nl: "Automatisch ingevuld bij upload",
+        },
         condition: (_, __, { user }) => !((user as Record<string, unknown>)?.restaurant),
       },
     },
@@ -63,6 +72,7 @@ export const Media: CollectionConfig = {
       name: "alt",
       type: "text",
       required: true,
+      label: { en: "Alt Text", fr: "Texte alternatif", nl: "Alt-tekst" },
     },
   ],
 };

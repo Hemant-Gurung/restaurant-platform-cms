@@ -22,9 +22,13 @@ export const MenuCategories: CollectionConfig = {
       ({ req, data }) => stampRestaurant({ req, data }),
     ],
   },
+  labels: {
+    singular: { en: "Menu Category", fr: "Catégorie du menu", nl: "Menucategorie" },
+    plural: { en: "Menu Categories", fr: "Catégories du menu", nl: "Menucategorieën" },
+  },
   admin: {
     useAsTitle: "name",
-    group: "Menu",
+    group: { en: "Menu", fr: "Menu", nl: "Menu" },
     defaultColumns: ["name", "createdAt"],
   },
   fields: [
@@ -32,6 +36,7 @@ export const MenuCategories: CollectionConfig = {
       name: "name",
       type: "text",
       required: true,
+      label: { en: "Name", fr: "Nom", nl: "Naam" },
       admin: {
         placeholder: "e.g. Starters, Mains, Desserts",
       },
@@ -42,8 +47,13 @@ export const MenuCategories: CollectionConfig = {
       required: true,
       defaultValue: "my-restaurant",
       options: RESTAURANTS,
+      label: { en: "Restaurant", fr: "Restaurant", nl: "Restaurant" },
       admin: {
-        description: "Which restaurant this category belongs to",
+        description: {
+          en: "Which restaurant this category belongs to",
+          fr: "À quel restaurant appartient cette catégorie",
+          nl: "Bij welk restaurant deze categorie hoort",
+        },
         // Hide from scoped admins — it is auto-stamped for them via beforeChange
         condition: (_, siblingData, { user }) => {
           return !((user as Record<string, unknown>)?.restaurant);

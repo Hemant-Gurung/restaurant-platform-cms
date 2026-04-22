@@ -12,9 +12,13 @@ export const Restaurants: CollectionConfig = {
     update: ({ req }) => isSuperAdmin(req.user),
     delete: ({ req }) => isSuperAdmin(req.user),
   },
+  labels: {
+    singular: { en: "Restaurant", fr: "Restaurant", nl: "Restaurant" },
+    plural: { en: "Restaurants", fr: "Restaurants", nl: "Restaurants" },
+  },
   admin: {
     useAsTitle: "name",
-    group: "Settings",
+    group: { en: "Settings", fr: "Paramètres", nl: "Instellingen" },
     hidden: ({ user }) => !isSuperAdmin(user),
   },
   fields: [

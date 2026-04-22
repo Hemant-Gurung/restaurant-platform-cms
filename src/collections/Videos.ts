@@ -26,8 +26,12 @@ export const Videos: CollectionConfig = {
       },
     ],
   },
+  labels: {
+    singular: { en: "Video", fr: "Vidéo", nl: "Video" },
+    plural: { en: "Videos", fr: "Vidéos", nl: "Video's" },
+  },
   admin: {
-    group: "Settings",
+    group: { en: "Settings", fr: "Paramètres", nl: "Instellingen" },
     defaultColumns: ["filename", "createdAt"],
   },
   upload: {

@@ -10,8 +10,12 @@ export const Orders: CollectionConfig = {
     update: ({ req }) => Boolean(req.user),
     delete: ({ req }) => Boolean(req.user),
   },
+  labels: {
+    singular: { en: "Order", fr: "Commande", nl: "Bestelling" },
+    plural: { en: "Orders", fr: "Commandes", nl: "Bestellingen" },
+  },
   admin: {
-    group: "Bookings",
+    group: { en: "Bookings", fr: "Réservations", nl: "Boekingen" },
     defaultColumns: ["id", "status", "type", "total", "createdAt"],
   },
   hooks: {

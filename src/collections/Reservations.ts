@@ -101,9 +101,13 @@ export const Reservations: CollectionConfig = {
       },
     ],
   },
+  labels: {
+    singular: { en: "Reservation", fr: "Réservation", nl: "Reservering" },
+    plural: { en: "Reservations", fr: "Réservations", nl: "Reserveringen" },
+  },
   admin: {
     useAsTitle: "name",
-    group: "Bookings",
+    group: { en: "Bookings", fr: "Réservations", nl: "Boekingen" },
     defaultColumns: ["name", "restaurant", "date", "partySize", "type", "status"],
   },
   fields: [
