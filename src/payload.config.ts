@@ -1,4 +1,7 @@
 import { buildConfig, type EmailAdapter, type SharpDependency } from "payload";
+import { en } from "@payloadcms/translations/languages/en";
+import { fr } from "@payloadcms/translations/languages/fr";
+import { nl } from "@payloadcms/translations/languages/nl";
 import { postgresAdapter } from "@payloadcms/db-postgres";
 import { vercelBlobStorage } from "@payloadcms/storage-vercel-blob";
 import { resendAdapter } from "@payloadcms/email-resend";
@@ -38,6 +41,10 @@ const serverURL = process.env.NEXT_PUBLIC_SERVER_URL ?? "http://localhost:3002";
 
 export default buildConfig({
   serverURL,
+  i18n: {
+    supportedLanguages: { en, fr, nl },
+    fallbackLanguage: "en",
+  },
   localization: {
     locales: [
       { label: "English", code: "en" },
@@ -60,7 +67,10 @@ meta: {
     },
     components: {
       providers: ["@/components/LocalizerVisibility#default"],
-      afterNavLinks: ["@/views/FloorPlanView/NavLink#default"],
+      afterNavLinks: [
+        "@/views/FloorPlanView/NavLink#default",
+        "@/components/LanguageSwitcher#default",
+      ],
       views: {
         floorPlan: {
           Component: "@/views/FloorPlanView#default",

@@ -3,9 +3,13 @@ import { getPayload } from "payload";
 import config from "@payload-config";
 
 const DEEPL_LOCALE_MAP: Record<string, string> = {
+  en: "EN",
   fr: "FR",
   nl: "NL",
 };
+
+const ALL_LOCALES = ["en", "fr", "nl"] as const;
+type Locale = (typeof ALL_LOCALES)[number];
 
 export async function POST(req: NextRequest) {
   const payload = await getPayload({ config });
@@ -14,22 +18,36 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { id, fields, targetLocale } = await req.json() as {
+  const { id, sourceLocale, targetLocale } = await req.json() as {
     id: string;
-    fields: { tagline?: string; description?: string };
-    targetLocale: "fr" | "nl";
+    sourceLocale: Locale;
+    targetLocale: Locale;
   };
 
-  if (!id || !fields || !targetLocale || !DEEPL_LOCALE_MAP[targetLocale]) {
-    return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+  if (!id || !DEEPL_LOCALE_MAP[sourceLocale] || !DEEPL_LOCALE_MAP[targetLocale]) {
+    return NextResponse.json({ error: "Missing or invalid fields" }, { status: 400 });
   }
 
-  const toTranslate = Object.entries(fields).filter(
-    ([, v]) => typeof v === "string" && v.trim(),
-  ) as [string, string][];
+  if (sourceLocale === targetLocale) {
+    return NextResponse.json({ error: "Source and target locale are the same" }, { status: 400 });
+  }
+
+  // Fetch the source content in the chosen locale
+  const doc = await payload.findByID({
+    collection: "site-content",
+    id,
+    locale: sourceLocale,
+    depth: 0,
+    overrideAccess: true,
+  }) as { tagline?: string; description?: string };
+
+  const toTranslate = Object.entries({
+    tagline: doc.tagline,
+    description: doc.description,
+  }).filter(([, v]) => typeof v === "string" && (v as string).trim()) as [string, string][];
 
   if (!toTranslate.length) {
-    return NextResponse.json({ error: "No text to translate" }, { status: 400 });
+    return NextResponse.json({ error: "No text to translate in source locale" }, { status: 400 });
   }
 
   const deeplRes = await fetch("https://api-free.deepl.com/v2/translate", {
@@ -40,7 +58,7 @@ export async function POST(req: NextRequest) {
     },
     body: JSON.stringify({
       text: toTranslate.map(([, v]) => v),
-      source_lang: "EN",
+      source_lang: DEEPL_LOCALE_MAP[sourceLocale],
       target_lang: DEEPL_LOCALE_MAP[targetLocale],
     }),
   });

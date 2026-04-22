@@ -17,6 +17,7 @@
     "@payloadcms/next": "3.82.1",
     "@payloadcms/richtext-lexical": "3.82.1",
     "@payloadcms/storage-vercel-blob": "^3.82.1",
+    "@payloadcms/translations": "^3.82.1",
     "@payloadcms/ui": "^3.83.0",
     "@tailwindcss/postcss": "^4.2.2",
     "next": "^16.2.2",
