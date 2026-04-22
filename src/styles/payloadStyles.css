@@ -10,3 +10,7 @@
 .template-default--nav-open .nav-group__content {
   padding-left: 12px;
 }
+
+/* Hide locale switcher everywhere except SiteContent pages */
+.localizer { display: none !important; }
+.show-localizer .localizer { display: flex !important; }

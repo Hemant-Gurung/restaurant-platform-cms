@@ -59,6 +59,7 @@ meta: {
       titleSuffix: "— Restaurant Admin",
     },
     components: {
+      providers: ["@/components/LocalizerVisibility#default"],
       afterNavLinks: ["@/views/FloorPlanView/NavLink#default"],
       views: {
         floorPlan: {
