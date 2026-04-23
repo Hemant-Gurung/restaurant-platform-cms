@@ -11,7 +11,7 @@ const ALL_LOCALES = [
 
 const UI_STRINGS = {
   en: {
-    hint: (src: string) => `Translate tagline & description from ${src}`,
+    hint: (src: string) => `Auto-translate content from ${src}`,
     translateTo: (lang: string) => `Translate to ${lang}`,
     translating: "Translating…",
     saved: "✓ Saved",
@@ -19,7 +19,7 @@ const UI_STRINGS = {
     saveFirst: "Save the document first to enable auto-translate.",
   },
   fr: {
-    hint: (src: string) => `Traduire le slogan et la description depuis ${src}`,
+    hint: (src: string) => `Traduire automatiquement le contenu depuis ${src}`,
     translateTo: (lang: string) => `Traduire en ${lang}`,
     translating: "Traduction…",
     saved: "✓ Enregistré",
@@ -27,7 +27,7 @@ const UI_STRINGS = {
     saveFirst: "Enregistrez d'abord le document pour activer la traduction automatique.",
   },
   nl: {
-    hint: (src: string) => `Vertaal slogan en beschrijving vanuit ${src}`,
+    hint: (src: string) => `Inhoud automatisch vertalen vanuit ${src}`,
     translateTo: (lang: string) => `Vertalen naar ${lang}`,
     translating: "Vertalen…",
     saved: "✓ Opgeslagen",
@@ -54,12 +54,19 @@ function getDocumentId(): string | undefined {
   return id && id !== "create" ? id : undefined;
 }
 
+function getCollection(): string | undefined {
+  if (typeof window === "undefined") return undefined;
+  const match = window.location.pathname.match(/\/collections\/([^/]+)/);
+  return match?.[1];
+}
+
 export default function TranslateButton() {
   const { i18n } = useTranslation();
   const uiLang = (i18n.language ?? "en") as keyof typeof UI_STRINGS;
   const t = UI_STRINGS[uiLang] ?? UI_STRINGS.en;
 
   const id = getDocumentId();
+  const collection = getCollection();
   const sourceLocale = getCurrentLocale() as keyof typeof LOCALE_NAMES;
   const targetLocales = ALL_LOCALES.filter((l) => l.code !== sourceLocale);
   const [status, setStatus] = useState<Record<string, "idle" | "loading" | "done" | "error">>({});
@@ -79,7 +86,7 @@ export default function TranslateButton() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ id, sourceLocale, targetLocale }),
+        body: JSON.stringify({ id, collection, sourceLocale, targetLocale }),
       });
 
       if (!res.ok) {

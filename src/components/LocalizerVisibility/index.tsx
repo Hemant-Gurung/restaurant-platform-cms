@@ -7,19 +7,21 @@ export default function LocalizerVisibility({ children }: { children?: React.Rea
   const pathname = usePathname();
 
   useEffect(() => {
-    const isSiteContent = pathname?.includes("/collections/site-content");
+    const isLocalizedCollection =
+      pathname?.includes("/collections/site-content") ||
+      pathname?.includes("/collections/promotions");
 
     // Hide/show localizer
     const apply = () => {
       document.querySelectorAll<HTMLElement>(".localizer").forEach((el) => {
-        el.style.display = isSiteContent ? "" : "none";
+        el.style.display = isLocalizedCollection ? "" : "none";
       });
     };
     apply();
     const t = setTimeout(apply, 300);
 
-    // Sync ?locale URL param with the payload-lng cookie when on SiteContent
-    if (isSiteContent) {
+    // Sync ?locale URL param with the payload-lng cookie when on a localized collection
+    if (isLocalizedCollection) {
       const cookieMatch = document.cookie.match(/(?:^|;\s*)payload-lng=([^;]+)/);
       const cookieLang = cookieMatch?.[1];
       if (cookieLang) {

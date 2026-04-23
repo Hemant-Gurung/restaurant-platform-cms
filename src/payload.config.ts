@@ -22,6 +22,7 @@ import { Orders } from "./collections/Orders";
 import { Restaurants } from "./collections/Restaurants";
 import { SiteContent } from "./collections/SiteContent";
 import { Videos } from "./collections/Videos";
+import { Promotions } from "./collections/Promotions";
 import { availabilityHandler } from "./lib/availabilityEndpoint";
 import { restaurantConfigHandler } from "./lib/restaurantConfigEndpoint";
 
@@ -107,6 +108,7 @@ meta: {
     Restaurants,
     SiteContent,
     Videos,
+    Promotions,
   ],
   plugins: [
     vercelBlobStorage({

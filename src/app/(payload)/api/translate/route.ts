@@ -11,6 +11,12 @@ const DEEPL_LOCALE_MAP: Record<string, string> = {
 const ALL_LOCALES = ["en", "fr", "nl"] as const;
 type Locale = (typeof ALL_LOCALES)[number];
 
+// Fields to translate per collection — add new collections here
+const TRANSLATABLE_FIELDS: Record<string, string[]> = {
+  "site-content": ["tagline", "description"],
+  "promotions": ["title", "message"],
+};
+
 export async function POST(req: NextRequest) {
   const payload = await getPayload({ config });
   const { user } = await payload.auth({ headers: req.headers });
@@ -18,13 +24,14 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { id, sourceLocale, targetLocale } = await req.json() as {
+  const { id, collection, sourceLocale, targetLocale } = await req.json() as {
     id: string;
+    collection: string;
     sourceLocale: Locale;
     targetLocale: Locale;
   };
 
-  if (!id || !DEEPL_LOCALE_MAP[sourceLocale] || !DEEPL_LOCALE_MAP[targetLocale]) {
+  if (!id || !collection || !DEEPL_LOCALE_MAP[sourceLocale] || !DEEPL_LOCALE_MAP[targetLocale]) {
     return NextResponse.json({ error: "Missing or invalid fields" }, { status: 400 });
   }
 
@@ -32,19 +39,22 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Source and target locale are the same" }, { status: 400 });
   }
 
-  // Fetch the source content in the chosen locale
+  const fields = TRANSLATABLE_FIELDS[collection];
+  if (!fields) {
+    return NextResponse.json({ error: `Translation not configured for collection: ${collection}` }, { status: 400 });
+  }
+
   const doc = await payload.findByID({
-    collection: "site-content",
+    collection,
     id,
     locale: sourceLocale,
     depth: 0,
     overrideAccess: true,
-  }) as { tagline?: string; description?: string };
+  }) as Record<string, unknown>;
 
-  const toTranslate = Object.entries({
-    tagline: doc.tagline,
-    description: doc.description,
-  }).filter(([, v]) => typeof v === "string" && (v as string).trim()) as [string, string][];
+  const toTranslate = fields
+    .map((key) => [key, doc[key]] as [string, unknown])
+    .filter(([, v]) => typeof v === "string" && (v as string).trim()) as [string, string][];
 
   if (!toTranslate.length) {
     return NextResponse.json({ error: "No text to translate in source locale" }, { status: 400 });
@@ -76,7 +86,7 @@ export async function POST(req: NextRequest) {
   );
 
   await payload.update({
-    collection: "site-content",
+    collection,
     id,
     locale: targetLocale,
     data: translated,
