@@ -36,7 +36,7 @@ export async function POST(req: NextRequest) {
 
     const lineItems = items.map((item: { name: string; price: number; quantity: number }) => ({
       price_data: {
-        currency: process.env.STRIPE_CURRENCY ?? "gbp",
+        currency: "eur",
         product_data: { name: item.name },
         unit_amount: Math.round(item.price * 100),
       },
@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
     }));
 
     const session = await stripe.checkout.sessions.create({
-      payment_method_types: ["card"],
+      payment_method_types: ["card", "bancontact"],
       line_items: lineItems,
       mode: "payment",
       success_url: `${successUrl}?session_id={CHECKOUT_SESSION_ID}`,
