@@ -109,6 +109,9 @@ export const Reservations: CollectionConfig = {
     useAsTitle: "name",
     group: { en: "Bookings", fr: "Réservations", nl: "Boekingen" },
     defaultColumns: ["name", "restaurant", "date", "partySize", "type", "status"],
+    components: {
+      beforeListTable: ["@/components/ReservationCalendar#default"],
+    },
   },
   fields: [
     {

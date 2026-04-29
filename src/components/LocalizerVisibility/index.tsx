@@ -9,7 +9,9 @@ export default function LocalizerVisibility({ children }: { children?: React.Rea
   useEffect(() => {
     const isLocalizedCollection =
       pathname?.includes("/collections/site-content") ||
-      pathname?.includes("/collections/promotions");
+      pathname?.includes("/collections/promotions") ||
+      pathname?.includes("/collections/menu-items") ||
+      pathname?.includes("/collections/menu-categories");
 
     // Hide/show localizer
     const apply = () => {

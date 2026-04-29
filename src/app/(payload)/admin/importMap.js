@@ -1,4 +1,5 @@
 import { default as default_456e131791aee057f321efacca311f29 } from '@/components/MenuItemCategoryFilter'
+import { default as default_493953e773e89d38775bcd2099d40858 } from '@/components/ReservationCalendar'
 import { default as default_18b55eccff5c441785e708e5f2c732b7 } from '@/components/TranslateButton'
 import { RscEntryLexicalCell as RscEntryLexicalCell_44fe37237e0ebf4470c9990d8cb7b07e } from '@payloadcms/richtext-lexical/rsc'
 import { RscEntryLexicalField as RscEntryLexicalField_44fe37237e0ebf4470c9990d8cb7b07e } from '@payloadcms/richtext-lexical/rsc'
@@ -25,6 +26,8 @@ import { BoldFeatureClient as BoldFeatureClient_e70f5e05f09f93e00b997edb1ef0c864
 import { ItalicFeatureClient as ItalicFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { default as default_cd8c773f92a583e7442f3dc71507d944 } from '@/views/FloorPlanView/NavLink'
 import { default as default_1bc34819662e3e0b0a963c98e31f0b3f } from '@/components/LanguageSwitcher'
+import { default as default_a6f8d274cbad594333e29f38dac9bf6a } from '@/components/DashboardCharts'
+import { default as default_719c11127497f1e6db4c01f7cddd710b } from '@/components/DashboardStats'
 import { default as default_faa48397ef5a9e85fda4e78b7fd0f47f } from '@/components/LocalizerVisibility'
 import { VercelBlobClientUploadHandler as VercelBlobClientUploadHandler_16c82c5e25f430251a3e3ba57219ff4e } from '@payloadcms/storage-vercel-blob/client'
 import { default as default_d999efb999580e568afbe41f01345a16 } from '@/views/FloorPlanView'
@@ -32,6 +35,7 @@ import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } f
 
 export const importMap = {
   "@/components/MenuItemCategoryFilter#default": default_456e131791aee057f321efacca311f29,
+  "@/components/ReservationCalendar#default": default_493953e773e89d38775bcd2099d40858,
   "@/components/TranslateButton#default": default_18b55eccff5c441785e708e5f2c732b7,
   "@payloadcms/richtext-lexical/rsc#RscEntryLexicalCell": RscEntryLexicalCell_44fe37237e0ebf4470c9990d8cb7b07e,
   "@payloadcms/richtext-lexical/rsc#RscEntryLexicalField": RscEntryLexicalField_44fe37237e0ebf4470c9990d8cb7b07e,
@@ -58,6 +62,8 @@ export const importMap = {
   "@payloadcms/richtext-lexical/client#ItalicFeatureClient": ItalicFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "@/views/FloorPlanView/NavLink#default": default_cd8c773f92a583e7442f3dc71507d944,
   "@/components/LanguageSwitcher#default": default_1bc34819662e3e0b0a963c98e31f0b3f,
+  "@/components/DashboardCharts#default": default_a6f8d274cbad594333e29f38dac9bf6a,
+  "@/components/DashboardStats#default": default_719c11127497f1e6db4c01f7cddd710b,
   "@/components/LocalizerVisibility#default": default_faa48397ef5a9e85fda4e78b7fd0f47f,
   "@payloadcms/storage-vercel-blob/client#VercelBlobClientUploadHandler": VercelBlobClientUploadHandler_16c82c5e25f430251a3e3ba57219ff4e,
   "@/views/FloorPlanView#default": default_d999efb999580e568afbe41f01345a16,

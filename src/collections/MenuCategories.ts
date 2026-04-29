@@ -7,6 +7,7 @@ import {
   restaurantDelete,
   stampRestaurant,
 } from "../lib/access";
+import { autoTranslate } from "../lib/autoTranslate";
 
 export const MenuCategories: CollectionConfig = {
   slug: "menu-categories",
@@ -20,6 +21,23 @@ export const MenuCategories: CollectionConfig = {
   hooks: {
     beforeChange: [
       ({ req, data }) => stampRestaurant({ req, data }),
+    ],
+    afterChange: [
+      ({ doc, req }) => {
+        const locale = (req as unknown as { locale?: string }).locale;
+        if (!locale || locale === "en") {
+          setTimeout(() => {
+            autoTranslate({
+              payload: req.payload,
+              collection: "menu-categories",
+              id: String(doc.id),
+              fields: ["name"],
+              sourceData: doc as Record<string, unknown>,
+            }).catch((err) => console.error("Menu category auto-translate failed:", err));
+          }, 3000);
+        }
+        return doc;
+      },
     ],
   },
   labels: {
@@ -36,6 +54,7 @@ export const MenuCategories: CollectionConfig = {
       name: "name",
       type: "text",
       required: true,
+      localized: true,
       label: { en: "Name", fr: "Nom", nl: "Naam" },
       admin: {
         placeholder: "e.g. Starters, Mains, Desserts",

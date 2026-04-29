@@ -25,6 +25,8 @@ import { Videos } from "./collections/Videos";
 import { Promotions } from "./collections/Promotions";
 import { availabilityHandler } from "./lib/availabilityEndpoint";
 import { restaurantConfigHandler } from "./lib/restaurantConfigEndpoint";
+import { dashboardStatsHandler } from "./lib/dashboardStatsEndpoint";
+import { dashboardChartHandler } from "./lib/dashboardChartEndpoint";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -72,6 +74,7 @@ meta: {
         "@/views/FloorPlanView/NavLink#default",
         "@/components/LanguageSwitcher#default",
       ],
+      beforeDashboard: ["@/components/DashboardCharts#default", "@/components/DashboardStats#default"],
       views: {
         floorPlan: {
           Component: "@/views/FloorPlanView#default",
@@ -93,6 +96,16 @@ meta: {
       path: "/restaurant-config",
       method: "get",
       handler: restaurantConfigHandler,
+    },
+    {
+      path: "/dashboard-stats",
+      method: "get",
+      handler: dashboardStatsHandler,
+    },
+    {
+      path: "/dashboard-chart",
+      method: "get",
+      handler: dashboardChartHandler,
     },
   ],
   collections: [

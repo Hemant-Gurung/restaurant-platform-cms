@@ -46,6 +46,18 @@ export type RestaurantSlug = "my-restaurant" | "verde-kitchen" | "new-restaurant
 
 **Do not** edit restaurant options in individual collection files — they all import from `src/lib/restaurants.ts`.
 
+#### Slug rules — must be respected at all times
+
+The `restaurant` slug is used as the primary identifier across every collection, the frontend env var, Supabase Realtime filters, and API keys. Violating these rules causes silent data loss or access failures.
+
+1. **Slug is immutable once set.** Never rename a slug after the restaurant is live. Rename the display `name` field freely — the slug never changes.
+2. **Slug format: lowercase, hyphenated, no special characters.** `verde-kitchen` not `Verde Kitchen`, `verde_kitchen`, or `verdeKitchen`.
+3. **`src/lib/restaurants.ts` is the only place slugs are defined.** Never hardcode a slug string anywhere else in the codebase.
+4. **Frontend `NEXT_PUBLIC_RESTAURANT` env var must match the slug exactly.** A typo means all API queries return empty with no error.
+5. **Deploy `restaurants.ts` before creating any data for the restaurant.** The slug must exist in code before a scoped admin logs in or tries to create records.
+6. **Supabase Realtime filter must use the exact slug.** `filter: \`restaurant=eq.verde-kitchen\`` — wrong slug means the kitchen display shows nothing silently.
+7. **The scoped admin account must have the `restaurant` field set to the correct slug.** If missing, `stampRestaurant` cannot auto-stamp and records will be unscoped.
+
 - `stampRestaurant()` — a `beforeChange` hook that auto-populates the `restaurant` field from the authenticated admin's restaurant
 - `publicRestaurantRead()` / `privateRestaurantRead()` — filter queries by restaurant slug from the request
 - `getRequestRestaurant()` — extracts the restaurant slug from the authenticated user's token

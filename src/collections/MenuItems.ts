@@ -7,6 +7,7 @@ import {
   restaurantDelete,
   stampRestaurant,
 } from "../lib/access";
+import { autoTranslate } from "../lib/autoTranslate";
 
 export const MenuItems: CollectionConfig = {
   slug: "menu-items",
@@ -24,6 +25,23 @@ export const MenuItems: CollectionConfig = {
     beforeChange: [
       ({ req, data }) => stampRestaurant({ req, data }),
     ],
+    afterChange: [
+      ({ doc, req }) => {
+        const locale = (req as unknown as { locale?: string }).locale;
+        if (!locale || locale === "en") {
+          setTimeout(() => {
+            autoTranslate({
+              payload: req.payload,
+              collection: "menu-items",
+              id: String(doc.id),
+              fields: ["name", "description"],
+              sourceData: doc as Record<string, unknown>,
+            }).catch((err) => console.error("Menu item auto-translate failed:", err));
+          }, 3000);
+        }
+        return doc;
+      },
+    ],
   },
   admin: {
     useAsTitle: "name",
@@ -38,12 +56,14 @@ export const MenuItems: CollectionConfig = {
       name: "name",
       type: "text",
       required: true,
+      localized: true,
       label: { en: "Name", fr: "Nom", nl: "Naam" },
     },
     {
       name: "description",
       type: "textarea",
       required: true,
+      localized: true,
       label: { en: "Description", fr: "Description", nl: "Beschrijving" },
     },
     {
@@ -71,8 +91,8 @@ export const MenuItems: CollectionConfig = {
           fr: "À quel restaurant appartient cet article",
           nl: "Bij welk restaurant dit item hoort",
         },
-        condition: (_, siblingData, { user }) => {
-          return !((user as Record<string, unknown>)?.restaurant);
+        condition: (_, __, { user }) => {
+          return !((user as unknown as Record<string, unknown>)?.restaurant);
         },
       },
     },

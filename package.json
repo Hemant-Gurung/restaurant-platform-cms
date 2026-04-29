@@ -8,6 +8,7 @@
     "build": "next build",
     "start": "next start --port 3002",
     "generate:types": "PAYLOAD_CONFIG_PATH=src/payload.config.ts payload --use-swc generate:types",
+    "generate:importmap": "PAYLOAD_CONFIG_PATH=src/payload.config.ts payload --use-swc generate:importmap",
     "migrate:create": "PAYLOAD_CONFIG_PATH=src/payload.config.ts payload --use-swc migrate:create",
     "migrate": "PAYLOAD_CONFIG_PATH=src/payload.config.ts payload --use-swc migrate"
   },

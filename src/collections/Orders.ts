@@ -5,7 +5,7 @@ import { privateRestaurantRead, stampRestaurant } from "../lib/access";
 export const Orders: CollectionConfig = {
   slug: "orders",
   access: {
-    create: () => true,
+    create: ({ req }) => !((req.user as unknown as Record<string, unknown>)?.restaurant),
     read: privateRestaurantRead,
     update: ({ req }) => Boolean(req.user),
     delete: ({ req }) => Boolean(req.user),
@@ -21,6 +21,16 @@ export const Orders: CollectionConfig = {
   hooks: {
     beforeChange: [
       ({ req, data }) => stampRestaurant({ req, data }),
+      ({ data }) => {
+        const items = data.items as { price?: number; quantity?: number }[] | undefined;
+        if (Array.isArray(items) && items.length > 0) {
+          data.total = items.reduce(
+            (sum, item) => sum + (item.price ?? 0) * (item.quantity ?? 1),
+            0,
+          );
+        }
+        return data;
+      },
     ],
   },
   fields: [
@@ -31,8 +41,9 @@ export const Orders: CollectionConfig = {
       options: RESTAURANTS,
       admin: {
         position: "sidebar",
-        readOnly: true,
-        description: "Auto-populated from the app's API key",
+        condition: (_, __, { user }) => {
+          return !((user as unknown as Record<string, unknown>)?.restaurant);
+        },
       },
     },
     {
@@ -80,15 +91,24 @@ export const Orders: CollectionConfig = {
       required: true,
       fields: [
         { name: "name", type: "text", required: true },
-        { name: "price", type: "number", required: true },
-        { name: "quantity", type: "number", required: true },
+        { name: "price", type: "number", required: true, admin: { step: 0.01 } },
+        { name: "quantity", type: "number", required: true, min: 1 },
       ],
     },
     {
       name: "total",
       type: "number",
       required: true,
-      admin: { readOnly: true },
+      admin: {
+        position: "sidebar",
+        readOnly: true,
+        description: {
+          en: "Auto-calculated from items",
+          fr: "Calculé automatiquement depuis les articles",
+          nl: "Automatisch berekend vanuit items",
+        },
+        step: 0.01,
+      },
     },
     {
       name: "tableNumber",
@@ -102,7 +122,7 @@ export const Orders: CollectionConfig = {
     {
       name: "stripeSessionId",
       type: "text",
-      admin: { readOnly: true, position: "sidebar" },
+      admin: { hidden: true },
     },
   ],
   timestamps: true,

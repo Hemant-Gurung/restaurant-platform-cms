@@ -15,6 +15,8 @@ type Locale = (typeof ALL_LOCALES)[number];
 const TRANSLATABLE_FIELDS: Record<string, string[]> = {
   "site-content": ["tagline", "description"],
   "promotions": ["title", "message"],
+  "menu-items": ["name", "description"],
+  "menu-categories": ["name"],
 };
 
 export async function POST(req: NextRequest) {
