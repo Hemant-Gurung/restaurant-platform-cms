@@ -75,7 +75,7 @@ export const MenuCategories: CollectionConfig = {
         },
         // Hide from scoped admins — it is auto-stamped for them via beforeChange
         condition: (_, siblingData, { user }) => {
-          return !((user as Record<string, unknown>)?.restaurant);
+          return !((user as unknown as Record<string, unknown>)?.restaurant);
         },
       },
     },

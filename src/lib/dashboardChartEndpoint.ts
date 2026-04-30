@@ -1,4 +1,4 @@
-import type { PayloadHandler } from "payload";
+import type { PayloadHandler, Where } from "payload";
 
 export const dashboardChartHandler: PayloadHandler = async (req) => {
   const { user } = await req.payload.auth({ headers: req.headers });
@@ -7,7 +7,7 @@ export const dashboardChartHandler: PayloadHandler = async (req) => {
   }
 
   const restaurant = (user as unknown as Record<string, unknown>)?.restaurant as string | undefined;
-  const baseWhere = restaurant ? { restaurant: { equals: restaurant } } : {};
+  const baseWhere: Where = restaurant ? { restaurant: { equals: restaurant } } : {};
 
   const now = new Date();
 
