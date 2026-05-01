@@ -18,9 +18,19 @@ export async function autoTranslate({
 }) {
   if (!process.env.DEEPL_API_KEY) return;
 
+  const resolveValue = (v: unknown): string | undefined => {
+    if (typeof v === "string") return v.trim() ? v : undefined;
+    if (typeof v === "object" && v !== null) {
+      const localized = v as Record<string, unknown>;
+      const val = localized["en"] ?? Object.values(localized).find((x) => typeof x === "string");
+      return typeof val === "string" && val.trim() ? val : undefined;
+    }
+    return undefined;
+  };
+
   const toTranslate = fields
-    .map((key) => [key, sourceData[key]] as [string, unknown])
-    .filter(([, v]) => typeof v === "string" && (v as string).trim()) as [string, string][];
+    .map((key) => [key, resolveValue(sourceData[key])] as [string, string | undefined])
+    .filter((entry): entry is [string, string] => entry[1] !== undefined);
 
   if (!toTranslate.length) return;
 
@@ -47,7 +57,7 @@ export async function autoTranslate({
       );
 
       await payload.update({
-        collection,
+        collection: collection as "menu-items" | "menu-categories" | "site-content" | "promotions",
         id,
         locale: targetLocale,
         data: translated,
