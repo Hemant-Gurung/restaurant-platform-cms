@@ -56,6 +56,7 @@ export const Orders: CollectionConfig = {
           options: [
             { label: "Takeaway", value: "takeaway" },
             { label: "Eat In", value: "eat-in" },
+            { label: "Delivery", value: "delivery" },
           ],
         },
         {
@@ -116,6 +117,43 @@ export const Orders: CollectionConfig = {
       admin: {
         position: "sidebar",
         condition: (data) => data.type === "eat-in",
+      },
+    },
+    {
+      name: "pickupTime",
+      type: "text",
+      label: { en: "Pickup Time", fr: "Heure de retrait", nl: "Ophaaltijd" },
+      admin: {
+        position: "sidebar",
+        condition: (data) => data.type === "takeaway",
+      },
+    },
+    {
+      name: "delivery",
+      type: "group",
+      label: { en: "Delivery Address", fr: "Adresse de livraison", nl: "Bezorgadres" },
+      admin: {
+        condition: (data) => data.type === "delivery",
+      },
+      fields: [
+        { name: "street", type: "text", label: { en: "Street", fr: "Rue", nl: "Straat" } },
+        { name: "city", type: "text", label: { en: "City", fr: "Ville", nl: "Stad" } },
+        { name: "postalCode", type: "text", label: { en: "Postal Code", fr: "Code postal", nl: "Postcode" } },
+        { name: "instructions", type: "text", label: { en: "Instructions", fr: "Instructions", nl: "Instructies" } },
+      ],
+    },
+    {
+      name: "scheduledFor",
+      type: "date",
+      label: { en: "Scheduled For", fr: "Prévu pour", nl: "Gepland voor" },
+      admin: {
+        position: "sidebar",
+        description: {
+          en: "Leave empty for ASAP orders. Set a date/time for future orders.",
+          fr: "Laisser vide pour les commandes immédiates. Définir une date/heure pour les commandes futures.",
+          nl: "Leeg laten voor directe bestellingen. Stel een datum/tijd in voor toekomstige bestellingen.",
+        },
+        date: { pickerAppearance: "dayAndTime" },
       },
     },
     { name: "notes", type: "textarea" },
