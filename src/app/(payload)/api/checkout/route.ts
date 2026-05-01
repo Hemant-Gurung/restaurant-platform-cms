@@ -5,7 +5,7 @@ import config from "@payload-config";
 
 export async function POST(req: NextRequest) {
   try {
-    const { restaurant, type, customer, items, tableNumber, notes, successUrl, cancelUrl } =
+    const { restaurant, type, customer, items, tableNumber, notes, scheduledFor, delivery, successUrl, cancelUrl } =
       await req.json();
 
     if (!restaurant || !type || !customer?.name || !customer?.phone || !items?.length || !successUrl || !cancelUrl) {
@@ -58,6 +58,11 @@ export async function POST(req: NextRequest) {
         customerEmail: customer.email ?? "",
         tableNumber: tableNumber ?? "",
         notes: notes ?? "",
+        scheduledFor: scheduledFor ?? "",
+        deliveryStreet: delivery?.street ?? "",
+        deliveryCity: delivery?.city ?? "",
+        deliveryPostalCode: delivery?.postalCode ?? "",
+        deliveryInstructions: delivery?.instructions ?? "",
       },
     });
 

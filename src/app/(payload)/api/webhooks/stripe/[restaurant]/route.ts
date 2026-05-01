@@ -134,7 +134,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ res
         collection: "orders",
         data: {
           restaurant: meta.restaurant as "my-restaurant" | "verde-kitchen",
-          type: meta.type as "takeaway" | "eat-in",
+          type: meta.type as "takeaway" | "eat-in" | "delivery",
           status: "pending",
           customer: {
             name: meta.customerName,
@@ -144,6 +144,14 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ res
           items,
           total,
           tableNumber: meta.tableNumber || undefined,
+          pickupTime: meta.pickupTime || undefined,
+          delivery: meta.type === "delivery" ? {
+            street: meta.deliveryStreet || undefined,
+            city: meta.deliveryCity || undefined,
+            postalCode: meta.deliveryPostalCode || undefined,
+            instructions: meta.deliveryInstructions || undefined,
+          } : undefined,
+          scheduledFor: meta.scheduledFor || undefined,
           notes: meta.notes || undefined,
           stripeSessionId: session.id,
         },

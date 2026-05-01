@@ -16,7 +16,7 @@ export const Orders: CollectionConfig = {
   },
   admin: {
     group: { en: "Bookings", fr: "Réservations", nl: "Boekingen" },
-    defaultColumns: ["id", "status", "type", "total", "createdAt"],
+    defaultColumns: ["id", "status", "type", "scheduledFor", "total", "createdAt"],
   },
   hooks: {
     beforeChange: [
