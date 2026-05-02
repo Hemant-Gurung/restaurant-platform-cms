@@ -158,6 +158,18 @@ export const Orders: CollectionConfig = {
     },
     { name: "notes", type: "textarea" },
     {
+      name: "paymentMethod",
+      type: "select",
+      label: { en: "Payment Method", fr: "Mode de paiement", nl: "Betaalmethode" },
+      options: [
+        { label: "Cash", value: "cash" },
+        { label: "Card", value: "card" },
+      ],
+      admin: {
+        position: "sidebar",
+      },
+    },
+    {
       name: "stripeSessionId",
       type: "text",
       admin: { hidden: true },
