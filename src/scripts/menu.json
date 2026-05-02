@@ -1,0 +1,38 @@
+{
+  "categories": [
+    "Starters",
+    "Mains",
+    "Desserts",
+    "Drinks"
+  ],
+  "items": [
+    {
+      "name": "Spring Rolls",
+      "description": "Crispy vegetable rolls served with sweet chili dipping sauce",
+      "price": 8.50,
+      "vatRate": 12,
+      "category": "Starters"
+    },
+    {
+      "name": "Burger",
+      "description": "Classic beef burger with lettuce, tomato, and house sauce",
+      "price": 16.00,
+      "vatRate": 12,
+      "category": "Mains"
+    },
+    {
+      "name": "Chocolate Lava Cake",
+      "description": "Warm chocolate cake with a molten centre, served with vanilla ice cream",
+      "price": 7.50,
+      "vatRate": 12,
+      "category": "Desserts"
+    },
+    {
+      "name": "Sparkling Water",
+      "description": "500ml sparkling mineral water",
+      "price": 3.00,
+      "vatRate": 21,
+      "category": "Drinks"
+    }
+  ]
+}

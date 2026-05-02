@@ -8,7 +8,8 @@ interface TopItem {
 
 const RANK_COLORS = ["#f59e0b", "#94a3b8", "#b45309"];
 
-export default function TopSellingItems({ data }: { data: TopItem[] }) {
+export default function TopSellingItems({ data }: { data?: TopItem[] }) {
+  if (!data) return null;
   const max = Math.max(...data.map((i) => i.quantity), 1);
 
   return (

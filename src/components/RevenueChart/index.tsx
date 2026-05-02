@@ -7,8 +7,8 @@ interface DayRevenue {
 
 const DAY_SHORT = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
-export default function RevenueChart({ data }: { data: DayRevenue[] }) {
-  if (!data.length) return null;
+export default function RevenueChart({ data }: { data?: DayRevenue[] }) {
+  if (!data?.length) return null;
 
   const max = Math.max(...data.map((d) => d.revenue), 1);
   const total = data.reduce((s, d) => s + d.revenue, 0);

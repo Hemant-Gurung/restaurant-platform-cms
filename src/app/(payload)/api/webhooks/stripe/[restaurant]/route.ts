@@ -122,10 +122,12 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ res
 
     try {
       const lineItems = await stripe.checkout.sessions.listLineItems(session.id, { limit: 100 });
-      const items = lineItems.data.map((item) => ({
+      const vatRates = JSON.parse(meta.itemVatRates || '[]') as number[];
+      const items = lineItems.data.map((item, i) => ({
         name: item.description ?? "Item",
         price: (item.price?.unit_amount ?? 0) / 100,
         quantity: item.quantity ?? 1,
+        vatRate: vatRates[i] ?? 12,
       }));
 
       const total = (session.amount_total ?? 0) / 100;
