@@ -2,7 +2,7 @@ import type { CollectionConfig } from "payload";
 import { RESTAURANTS } from "../lib/restaurants";
 import path from "path";
 import { fileURLToPath } from "url";
-import { publicRestaurantRead, restaurantUpdate, restaurantDelete, stampRestaurant, getRequestRestaurant } from "../lib/access";
+import { restaurantUpdate, restaurantDelete, stampRestaurant, getRequestRestaurant } from "../lib/access";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -10,8 +10,7 @@ const dirname = path.dirname(filename);
 export const Media: CollectionConfig = {
   slug: "media",
   access: {
-    // Public read so frontend <img> tags work unauthenticated; scoped admin sees only own restaurant
-    read: publicRestaurantRead,
+    read: () => true,
     // Any authenticated user (admin or API key) can upload
     create: ({ req }) => Boolean(req.user),
     // Scoped admins can only update their own restaurant's media
@@ -65,7 +64,7 @@ export const Media: CollectionConfig = {
           fr: "Rempli automatiquement lors du téléchargement",
           nl: "Automatisch ingevuld bij upload",
         },
-        condition: (_, __, { user }) => !((user as Record<string, unknown>)?.restaurant),
+        condition: (_, __, { user }) => !((user as unknown as Record<string, unknown>)?.restaurant),
       },
     },
     {

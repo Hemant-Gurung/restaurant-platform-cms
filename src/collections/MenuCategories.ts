@@ -34,7 +34,7 @@ export const MenuCategories: CollectionConfig = {
               fields: ["name"],
               sourceData: doc as Record<string, unknown>,
             }).catch((err) => console.error("Menu category auto-translate failed:", err));
-          }, 3000);
+          }, 5000);
         }
         return doc;
       },
@@ -50,6 +50,13 @@ export const MenuCategories: CollectionConfig = {
     defaultColumns: ["name", "createdAt"],
   },
   fields: [
+    {
+      name: "translateHelper",
+      type: "ui",
+      admin: {
+        components: { Field: "@/components/TranslateButton#default" },
+      },
+    },
     {
       name: "name",
       type: "text",

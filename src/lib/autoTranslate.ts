@@ -18,43 +18,65 @@ export async function autoTranslate({
 }) {
   if (!process.env.DEEPL_API_KEY) return;
 
+  const resolveValue = (v: unknown): string | undefined => {
+    if (typeof v === "string") return v.trim() ? v : undefined;
+    if (typeof v === "object" && v !== null) {
+      const localized = v as Record<string, unknown>;
+      const val = localized["en"] ?? Object.values(localized).find((x) => typeof x === "string");
+      return typeof val === "string" && val.trim() ? val : undefined;
+    }
+    return undefined;
+  };
+
   const toTranslate = fields
-    .map((key) => [key, sourceData[key]] as [string, unknown])
-    .filter(([, v]) => typeof v === "string" && (v as string).trim()) as [string, string][];
+    .map((key) => [key, resolveValue(sourceData[key])] as [string, string | undefined])
+    .filter((entry): entry is [string, string] => entry[1] !== undefined);
 
   if (!toTranslate.length) return;
 
   for (const targetLocale of TARGET_LOCALES) {
-    try {
-      const res = await fetch("https://api-free.deepl.com/v2/translate", {
-        method: "POST",
-        headers: {
-          Authorization: `DeepL-Auth-Key ${process.env.DEEPL_API_KEY}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          text: toTranslate.map(([, v]) => v),
-          source_lang: DEEPL_LOCALE_MAP.en,
-          target_lang: DEEPL_LOCALE_MAP[targetLocale],
-        }),
-      });
+    let lastErr: unknown;
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        const res = await fetch("https://api-free.deepl.com/v2/translate", {
+          method: "POST",
+          headers: {
+            Authorization: `DeepL-Auth-Key ${process.env.DEEPL_API_KEY}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            text: toTranslate.map(([, v]) => v),
+            source_lang: DEEPL_LOCALE_MAP.en,
+            target_lang: DEEPL_LOCALE_MAP[targetLocale],
+          }),
+        });
 
-      if (!res.ok) continue;
+        if (!res.ok) throw new Error(`DeepL ${res.status}`);
 
-      const { translations } = await res.json() as { translations: { text: string }[] };
-      const translated = Object.fromEntries(
-        toTranslate.map(([key], i) => [key, translations[i].text]),
-      );
+        const { translations } = await res.json() as { translations: { text: string }[] };
+        const translated = Object.fromEntries(
+          toTranslate.map(([key], i) => [key, translations[i].text]),
+        );
 
-      await payload.update({
-        collection,
-        id,
-        locale: targetLocale,
-        data: translated,
-        overrideAccess: true,
-      });
-    } catch (err) {
-      console.error(`Auto-translate ${collection} to ${targetLocale} failed:`, err);
+        await payload.update({
+          collection: collection as "menu-items" | "menu-categories" | "site-content" | "promotions",
+          id,
+          locale: targetLocale,
+          data: translated,
+          overrideAccess: true,
+        });
+
+        lastErr = undefined;
+        break;
+      } catch (err) {
+        lastErr = err;
+        if (attempt < 2) {
+          await new Promise((r) => setTimeout(r, 2000 * (attempt + 1)));
+        }
+      }
+    }
+    if (lastErr) {
+      console.error(`Auto-translate ${collection} to ${targetLocale} failed after 3 attempts:`, lastErr);
     }
   }
 }

@@ -37,7 +37,7 @@ export const MenuItems: CollectionConfig = {
               fields: ["name", "description"],
               sourceData: doc as Record<string, unknown>,
             }).catch((err) => console.error("Menu item auto-translate failed:", err));
-          }, 3000);
+          }, 5000);
         }
         return doc;
       },
@@ -52,6 +52,13 @@ export const MenuItems: CollectionConfig = {
     },
   },
   fields: [
+    {
+      name: "translateHelper",
+      type: "ui",
+      admin: {
+        components: { Field: "@/components/TranslateButton#default" },
+      },
+    },
     {
       name: "name",
       type: "text",
