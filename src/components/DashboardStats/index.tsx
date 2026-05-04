@@ -75,7 +75,14 @@ export default function DashboardStats() {
   useEffect(() => {
     fetch("/api/dashboard-stats", { credentials: "include" })
       .then((r) => r.json())
-      .then((data) => setStats(data as Stats))
+      .then((data: Partial<Stats>) => setStats({
+        revenueToday: data.revenueToday ?? 0,
+        revenueYesterday: data.revenueYesterday ?? 0,
+        ordersToday: data.ordersToday ?? 0,
+        ordersYesterday: data.ordersYesterday ?? 0,
+        bookingsToday: data.bookingsToday ?? 0,
+        bookingsYesterday: data.bookingsYesterday ?? 0,
+      }))
       .catch(() => setError(true));
   }, []);
 

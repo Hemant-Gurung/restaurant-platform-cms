@@ -104,6 +104,21 @@ export const MenuItems: CollectionConfig = {
       },
     },
     {
+      name: "vatRate",
+      type: "number",
+      required: true,
+      defaultValue: 12,
+      label: { en: "VAT Rate (%)", fr: "Taux TVA (%)", nl: "BTW-tarief (%)" },
+      admin: {
+        step: 1,
+        description: {
+          en: "6% food · 12% restaurant meals · 21% alcohol / standard",
+          fr: "6% alimentaire · 12% repas restaurant · 21% alcool / standard",
+          nl: "6% voeding · 12% restaurantmaaltijden · 21% alcohol / standaard",
+        },
+      },
+    },
+    {
       name: "available",
       type: "checkbox",
       defaultValue: true,

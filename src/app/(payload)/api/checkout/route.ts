@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
 
     const stripe = new Stripe(restaurantDoc.stripeSecretKey);
 
-    const lineItems = items.map((item: { name: string; price: number; quantity: number }) => ({
+    const lineItems = items.map((item: { name: string; price: number; quantity: number; vatRate?: number }) => ({
       price_data: {
         currency: "eur",
         product_data: { name: item.name },
@@ -63,6 +63,7 @@ export async function POST(req: NextRequest) {
         deliveryCity: delivery?.city ?? "",
         deliveryPostalCode: delivery?.postalCode ?? "",
         deliveryInstructions: delivery?.instructions ?? "",
+        itemVatRates: JSON.stringify(items.map((i: { vatRate?: number }) => i.vatRate ?? 12)),
       },
     });
 

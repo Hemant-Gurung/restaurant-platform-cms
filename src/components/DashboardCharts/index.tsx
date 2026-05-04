@@ -17,7 +17,11 @@ export default function DashboardCharts() {
   useEffect(() => {
     fetch("/api/dashboard-chart", { credentials: "include" })
       .then((r) => r.json())
-      .then((d) => setData(d as ChartData))
+      .then((d: Partial<ChartData>) => setData({
+        revenueByDay: d.revenueByDay ?? [],
+        topItems: d.topItems ?? [],
+        upcomingToday: d.upcomingToday ?? [],
+      }))
       .catch(() => null);
   }, []);
 

@@ -15,7 +15,8 @@ const STATUS_CONFIG: Record<string, { color: string; bg: string; label: string }
   CANCELLED: { color: "#dc2626", bg: "#fee2e2", label: "Cancelled" },
 };
 
-export default function UpcomingReservations({ data }: { data: Reservation[] }) {
+export default function UpcomingReservations({ data }: { data?: Reservation[] }) {
+  if (!data) return null;
   return (
     <div
       style={{
